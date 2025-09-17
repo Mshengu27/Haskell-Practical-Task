@@ -1,6 +1,13 @@
 import Data.List (sortBy)
 import Data.Ord (comparing)
 
+--HC2T1 - Checking Types in GHCi
+exampleTuple :: (Int ,Double ,String , Char , Bool)
+exampleTuple = (42, 3.14 ,"Haskell", 'Z', True && False)
+
+main :: IO()
+main = print exampleTuple
+
 -- HC2T2 - Function Type Signatures
 add :: Int -> Int -> Int
 add x y = x + y
