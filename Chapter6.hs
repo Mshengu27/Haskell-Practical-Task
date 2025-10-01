@@ -2,6 +2,7 @@
 -- Recursion and List Processing
 
 import Data.Char (digitToInt)
+import Data.Char (toUpper)
 
 -- HC6T1: Factorial (Recursive)
 factorial :: Int -> Int
