@@ -96,7 +96,7 @@ myBook = Book { title = "Learn Haskell", author = "Tankiso Tshabalala", year = 2
 main :: IO ()
 main = do
   putStrLn "--- HC8T1: generateTx ---"
-  putStrLn (generateTx "Alice" "Bob" 100)
+  putStrLn (generateTx "Alice" "Bob" 103)
 
   putStrLn "\n--- HC8T2: Person bob ---"
   print bob
