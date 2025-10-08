@@ -1,89 +1,123 @@
+-- Haskell Chapter 9 Practical Tasks: Parametric Types and Recursion
+
 -- HC9T1: Define a Parametric Type Synonym
--- Represents an entity with a name and an address or identifier of any type.
 type Entity a = (String, a)
 
--- HC9T2: Define a Parametric Data Type
--- A Box can either be empty or contain a value of any type.
-data Box a = Empty | Has a deriving Show
+-- HC9T2: Implement a Parametric Data Type
+data Box a = Empty | Has a
+  deriving (Show)
 
 -- HC9T3: Function to Add Values in a Box
--- Adds a number to the value inside the box if it exists.
 addN :: Num a => a -> Box a -> Box a
-addN n (Has x) = Has (n + x)
-addN _ Empty   = Empty
+addN n (Has x) = Has (x + n)
+addN _ Empty = Empty
 
--- HC9T4: Function to Extract a Value from a Box
--- Returns the value inside the box or a default value if the box is empty.
+-- HC9T4: Extract a Value from a Box
 extract :: a -> Box a -> a
-extract _ (Has x) = x
+extract def (Has x) = x
 extract def Empty = def
 
 -- HC9T5: Parametric Data Type with Record Syntax
--- Represents shapes with a color field.
-data Shape a = Circle { color :: a }
-             | Rectangle { color :: a } deriving Show
+data Shape a
+  = Circle { color :: a, radius :: Double }
+  | Rectangle { color :: a, width :: Double, height :: Double }
+  deriving (Show)
 
 -- HC9T6: Recursive Data Type for Tweets
--- A Tweet contains content, likes, and a list of comments (which are also Tweets).
-data Tweet = Tweet {
-    content  :: String,
-    likes    :: Int,
+data Tweet = Tweet
+  { content :: String,
+    likes :: Int,
     comments :: [Tweet]
-} deriving Show
+  }
+  deriving (Show)
 
 -- HC9T7: Engagement Function for Tweets
--- Calculates total engagement by summing likes and engagement of comments.
 engagement :: Tweet -> Int
-engagement (Tweet _ likes comments) = likes + sum (map engagement comments)
+engagement (Tweet _ l cs) = l + sum (map engagement cs)
 
 -- HC9T8: Recursive Sequence Data Type
--- Represents a linear sequence of values.
-data Sequence a = End | Node a (Sequence a) deriving Show
+data Sequence a
+  = End
+  | Node a (Sequence a)
+  deriving (Show)
 
--- HC9T9: Function to Check for Element in a Sequence
--- Returns True if the element is found in the sequence.
+-- HC9T9: Check for Element in a Sequence
 elemSeq :: Eq a => a -> Sequence a -> Bool
 elemSeq _ End = False
-elemSeq x (Node y rest) = x == y || elemSeq x rest
+elemSeq x (Node v rest)
+  | x == v = True
+  | otherwise = elemSeq x rest
 
--- HC9T10: Binary Search Tree Data Type
--- Represents a binary search tree with values and left/right subtrees.
-data BST a = EmptyTree
-           | NodeBST a (BST a) (BST a) deriving Show
+-- HC9T10: Binary Search Tree Data Type (using unique constructors)
+data BST a
+  = EmptyBST
+  | NodeBST a (BST a) (BST a)
+  deriving (Show)
 
--- Main function to demonstrate all tasks
+insertBST :: Ord a => a -> BST a -> BST a
+insertBST x EmptyBST = NodeBST x EmptyBST EmptyBST
+insertBST x (NodeBST val left right)
+  | x == val = NodeBST val left right
+  | x < val = NodeBST val (insertBST x left) right
+  | otherwise = NodeBST val left (insertBST x right)
+
+searchBST :: Ord a => a -> BST a -> Bool
+searchBST _ EmptyBST = False
+searchBST x (NodeBST val left right)
+  | x == val = True
+  | x < val = searchBST x left
+  | otherwise = searchBST x right
+
+inOrder :: BST a -> [a]
+inOrder EmptyBST = []
+inOrder (NodeBST v l r) = inOrder l ++ [v] ++ inOrder r
+
+-- MAIN FUNCTION THAT TEST ALL TASKS
 main :: IO ()
 main = do
-    -- HC9T1: Entity example
-    let homeAddress = ("Home", "123 Main Street") :: Entity String
-    putStrLn $ "Entity: " ++ show homeAddress
+  putStrLn "--- HC9T1: Parametric Type Synonym ---"
+  let addressEntity :: Entity String
+      addressEntity = ("Office", "123 Main Street")
+  print addressEntity
 
-    -- HC9T2–HC9T4: Box operations
-    let box = Has 10
-    putStrLn $ "Original box: " ++ show box
-    putStrLn $ "Box after adding 5: " ++ show (addN 5 box)
-    putStrLn $ "Extracted value: " ++ show (extract 0 box)
-    putStrLn $ "Extract from empty box: " ++ show (extract 0 Empty)
+  putStrLn "\n--- HC9T2: Parametric Data Type (Box) ---"
+  let box1 = Has 10
+      box2 :: Box Int
+      box2 = Empty
+  print box1
+  print box2
 
-    -- HC9T5: Shape examples
-    let redCircle = Circle { color = "Red" }
-    let blueRect = Rectangle { color = "Blue" }
-    putStrLn $ "Circle: " ++ show redCircle
-    putStrLn $ "Rectangle: " ++ show blueRect
+  putStrLn "\n--- HC9T3: Add Values in a Box ---"
+  print (addN 5 box1)
+  print (addN 5 box2)
 
-    -- HC9T6–HC9T7: Tweet and engagement
-    let comment1 = Tweet "Nice!" 2 []
-    let comment2 = Tweet "Great post!" 3 []
-    let mainTweet = Tweet "Hello World" 10 [comment1, comment2]
-    putStrLn $ "Main Tweet: " ++ show mainTweet
-    putStrLn $ "Total Engagement: " ++ show (engagement mainTweet)
+  putStrLn "\n--- HC9T4: Extract from a Box ---"
+  print (extract 0 box1)
+  print (extract 0 box2)
 
-    -- HC9T8–HC9T9: Sequence and element check
-    let seq1 = Node 1 (Node 2 (Node 3 End))
-    putStrLn $ "Sequence: " ++ show seq1
-    putStrLn $ "Contains 2? " ++ show (elemSeq 2 seq1)
-    putStrLn $ "Contains 5? " ++ show (elemSeq 5 seq1)
+  putStrLn "\n--- HC9T5: Parametric Shape Type ---"
+  let circle = Circle "Red" 5.0
+      rect = Rectangle "Blue" 4.0 6.0
+  print circle
+  print rect
 
-    -- HC9T10: Binary Search Tree example
-    let tree = NodeBST 5 (NodeBST 3 EmptyTree EmptyTree) (NodeBST 7 EmptyTree EmptyTree)
-    putStrLn $ "Binary Search Tree: " ++ show tree
+  putStrLn "\n--- HC9T6 & HC9T7: Tweets and Engagement ---"
+  let reply1 = Tweet "Nice post!" 3 []
+      reply2 = Tweet "Awesome!" 5 []
+      mainTweet = Tweet "Learning Haskell!" 10 [reply1, reply2]
+  print mainTweet
+  putStrLn $ "Total Engagement: " ++ show (engagement mainTweet)
+
+  putStrLn "\n--- HC9T8 & HC9T9: Sequence ---"
+  let seq1 = Node 1 (Node 2 (Node 3 End))
+  print seq1
+  print (elemSeq 2 seq1)
+  print (elemSeq 5 seq1)
+
+  putStrLn "\n--- HC9T10: Binary Search Tree (BST) ---"
+  let emptyTree = EmptyBST
+      tree = foldr insertBST emptyTree [10, 5, 15, 2, 7, 12, 20]
+  print tree
+  putStrLn $ "Is 7 in the tree? " ++ show (searchBST 7 tree)
+  putStrLn $ "Is 99 in the tree? " ++ show (searchBST 99 tree)
+  putStrLn $ "In-order traversal: " ++ show (inOrder tree)
