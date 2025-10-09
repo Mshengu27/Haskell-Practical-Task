@@ -89,41 +89,41 @@ instance Concatenatable String where
 main :: IO ()
 main = do
   putStrLn "--- HC10T1: ShowSimple ---"
-  print (showSimple Cash)
-  print (showSimple Card)
-  print (showSimple Crypto)
+  print (showSimple Cash) -- Expected: "Cash"
+  print (showSimple Card) -- Expected: "Card"
+  print (showSimple Crypto) -- Expected: "Cryptocurrency"
 
   putStrLn "\n--- HC10T2: Summable ---"
-  print (sumUp ([1, 2, 3, 4, 5] :: [Int]))
+  print (sumUp ([1, 2, 3, 4, 5] :: [Int])) -- Expected: 15
 
   putStrLn "\n--- HC10T3: Comparable ---"
-  print (compareWith Bitcoin Cardano)
+  print (compareWith Bitcoin Cardano) -- Expected: LT (Bitcoin < Cardano)
 
   putStrLn "\n--- HC10T4: Eq for Box ---"
-  print (Has 10 == Has 10)
-  print (Empty == Has 5)
+  print (Has 10 == Has 10) -- Expected: True
+  print (Empty == Has 5) -- Expected: False
 
   putStrLn "\n--- HC10T5: ShowDetailed ---"
   let user1 = User "Alice" 30
-  print (showDetailed user1)
+  print (showDetailed user1) -- Expected: "User: Alice, Age: 30"
 
   putStrLn "\n--- HC10T6: Mutual Recursion Eq ---"
-  print (Bitcoin == Bitcoin)
-  print (Bitcoin /= Cardano)
+  print (Bitcoin == Bitcoin) -- Expected: "True"
+  print (Bitcoin /= Cardano) -- Expected: "True"
 
   putStrLn "\n--- HC10T7: Convertible ---"
-  print (convert Cash   :: String)
-  print (convert Card   :: String)
-  print (convert Crypto :: String)
+  print (convert Cash   :: String) --Expected: "Cash Payment"
+  print (convert Card   :: String) --Expected: "Card Payment"
+  print (convert Crypto :: String) --Expected: "Cryptocurrency Payment"
 
   putStrLn "\n--- HC10T8: AdvancedEq ---"
-  print (compareEquality (5 :: Int) 5)
-  print (compareEquality Bitcoin Ethereum)
+  print (compareEquality (5 :: Int) 5)     -- Expected: "True"
+  print (compareEquality Bitcoin Ethereum) -- Expected: "False"
 
   putStrLn "\n--- HC10T9: MinMax ---"
-  print (minValue :: Int)
-  print (maxValue :: Int)
+  print (minValue :: Int) -- Expected: -9223372036854775808
+  print (maxValue :: Int) -- Expected: 9223372036854775808
 
   putStrLn "\n--- HC10T10: Concatenatable ---"
-  print (concatWith "Hello, " "World!")
-  print (concatWith "Hello, " "Programmer!")
+  print (concatWith "Hello, " "World!") -- Expected: "Hello, World!"
+  print (concatWith "Hello, " "Programmer!") -- Expected: "Hello, Programmer!"
